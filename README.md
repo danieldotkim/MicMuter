@@ -1,5 +1,5 @@
 # MicMuter
-This Python script allows you to mute or unmute your microphone easily through a tray icon. Simply launch the MicMuter.exe file to start using it. 
+This Python script allows you to mute or unmute your microphone easily through a tray icon.
 
 The default hotkey to mute/unmute is alt+` (tilde).
 

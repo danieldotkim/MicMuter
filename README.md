@@ -1,24 +1,16 @@
 # MicMuter
-Python script that runs on tray and mutes/unmutes your microphone.
+This Python script allows you to mute or unmute your microphone easily through a tray icon. Simply launch the MicMuter.exe file to start using it. 
 
-Launch MicMuter.exe to start.
-The default key to mute/unmute is alt+` (tilde).
+The default hotkey to mute/unmute is alt+` (tilde).
 
-Run "make MicMuter.exe run on startup.bat" to make it launch on startup.
-If you want to make MicMuter launch on start with admin, import StartMicMuter.xml to Task Scheduler.
+To ensure the script launches on startup, run "make MicMuter.exe run on startup.bat". Additionally, you can configure MicMuter to launch with admin privileges by importing StartMicMuter.xml to Task Scheduler.
 
-Right click on the tray icon and click "Reset state to unmuted" if the mic is unmuted but the indicator shows muted icon.
+In the event that the microphone is unmuted, but the indicator shows a muted icon, simply right-click the tray icon and select "Reset state to unmuted".
 
-The default icon color is set by your current Windows theme.
-If it is light, it will show black icons, if it is dark, it will show white icons.
-You can manually change that by clicking "Toggle black/white icons" in the tray menu.
-If you want to go back to auto mode, please change the bw value to auto (bw = auto).
+The default icon color is determined by your current Windows theme. MicMuter will show black icons for light themes, and white icons for dark themes. You can manually change the icon color by selecting "Toggle black/white icons" in the tray menu. If you want to go back to the default color scheme, simply change the bw value to "auto" in the config.ini file.
 
-Volume, hotkey, and other settings can be changed in the config.ini.
-Hotkey lists can be found here: https://pynput.readthedocs.io/en/latest/_modules/pynput/keyboard/_base.html#Key
-Put modifiers inside <>
+The script allows you to customize various settings such as volume, hotkey, and more, through the config.ini file. Refer to the list of available hotkeys here: https://pynput.readthedocs.io/en/latest/_modules/pynput/keyboard/_base.html#Key (modifiers should be put inside <>).
 
------
 Sounds inspired from Discord mute/unmute sound.
-Mute icons created by Freepik - Flaticon: https://www.flaticon.com/free-icons/mute
-Modified the icons to fit the theme.
+Icons created by Freepik - Flaticon: https://www.flaticon.com/free-icons/mute
+Modified the icons to fit the MicMuter theme.

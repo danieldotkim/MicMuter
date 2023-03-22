@@ -5,6 +5,7 @@ It is available via portable zip and installer. They can be found in [Releases](
 The default hotkey to mute/unmute is alt+` (tilde).
 
 Run ".configure startup task.bat" as admin to create a task that launches MicMuter on startup with highest privilege.
+
 Run ".remove startup task.bat" as admin to deletes the task that launches MicMuter on startup with highest privilege.
 
 In the event that the microphone is unmuted, but the indicator shows a muted icon, simply right-click the tray icon and select "Reset state to unmuted".

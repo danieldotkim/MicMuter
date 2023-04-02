@@ -31,6 +31,7 @@ if not os.path.exists(config_path):
     config['DEFAULT'] = {
         'unmuteOnExit': '1',
         'volume': '0.3',
+        'output_device': '',
         'hotkey0': '<alt>+`',
         'hotkey1': '',
         'hotkey2': '',
@@ -45,6 +46,7 @@ config = configparser.ConfigParser()
 config.read(config_path)
 unmuteOnExit = int(config['DEFAULT']['unmuteOnExit'])
 volume = float(config['DEFAULT']['volume'])
+output_device = config['DEFAULT']['output_device']
 hotkey0 = config['DEFAULT']['hotkey0']
 hotkey1 = config['DEFAULT']['hotkey1']
 hotkey2 = config['DEFAULT']['hotkey2']
@@ -63,7 +65,10 @@ icon_muted = 'icon_muted_' + bw
 icon_unmuted = 'icon_unmuted_' + bw
 
 # Initialize the mixer
-mixer.init()
+if output_device == '':
+    mixer.init()
+elif output_device != '':
+    mixer.init(devicename=output_device)
 
 # Set the volume for the sound files
 ms = mixer.Sound(mute_sound)
@@ -124,7 +129,6 @@ def is_dark_mode_enabled():
     return value == 0
 
 darkmode = is_dark_mode_enabled()
-print(darkmode)
 
 def bwtoggle():
     global bw

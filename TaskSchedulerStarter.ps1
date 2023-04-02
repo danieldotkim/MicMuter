@@ -1,0 +1,1 @@
+﻿Start-Process -FilePath 'C:\Program Files (x86)\MicMuter\MicMuter.exe' -Verb RunAs -WindowStyle Minimized

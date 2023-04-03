@@ -4,10 +4,6 @@ It is available via portable zip and installer. They can be found in [Releases](
 
 The default hotkey to mute/unmute is alt+` (tilde).
 
-Run ".configure startup task.bat" as admin to create a task that launches MicMuter on startup with highest privilege.
-
-Run ".remove startup task.bat" as admin to deletes the task that launches MicMuter on startup with highest privilege.
-
 In the event that the microphone is unmuted, but the indicator shows a muted icon, simply right-click the tray icon and select "Reset state to unmuted".
 
 The default icon color is determined by your current Windows theme. MicMuter will show black icons for light themes, and white icons for dark themes. You can manually change the icon color by selecting "Toggle black/white icons" in the tray menu. If you want to go back to the default color scheme, simply change the bw value to "auto" in the config.ini file.

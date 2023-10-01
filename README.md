@@ -11,6 +11,6 @@ The default icon color is determined by your current Windows theme. MicMuter wil
 The script allows you to customize various settings such as volume, hotkey, and more, through the config.ini file. Refer to the list of available hotkeys [here](https://pynput.readthedocs.io/en/latest/_modules/pynput/keyboard/_base.html#Key) (modifiers should be put inside <>).
 You may choose up to 6 different hotkeys.
 
-Sounds inspired from Discord mute/unmute sound.
+Sounds inspired by Discord mute/unmute sound.
 Icons created by [Freepik - Flaticon](https://www.flaticon.com/free-icons/mute).
 Modified the icons to fit the MicMuter theme.

@@ -12,5 +12,5 @@ The script allows you to customize various settings such as volume, hotkey, and 
 You may choose up to 6 different hotkeys.
 
 Sounds inspired from Discord mute/unmute sound.
-Icons created by [Freepik - Flaticon](https://www.flaticon.com/free-icons/mute)
+Icons created by [Freepik - Flaticon](https://www.flaticon.com/free-icons/mute).
 Modified the icons to fit the MicMuter theme.

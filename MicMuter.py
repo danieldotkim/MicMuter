@@ -8,6 +8,19 @@ import webbrowser
 import sys
 import os
 import winreg
+import atexit
+
+@atexit.register
+def quit_program(systray):
+    global m
+    if m == 1 and unmuteOnExit == 1:
+        mute()
+    if m == 1:
+        config['DEFAULT']['last_state'] = '1'
+    if m == 0:
+        config['DEFAULT']['last_state'] = '0'
+    write_config()
+    tray.shutdown()
 
 config_name = 'config.ini'
 
@@ -120,19 +133,6 @@ def reset_state():
 def reset_state_wrapper(event):
     reset_state()
 
-# unmutes before quitting
-def quit_program(systray):
-    global m
-    if m == 1 and unmuteOnExit == 1:
-        mute()
-    if m == 1:
-        config['DEFAULT']['last_state'] = '1'
-    if m == 0:
-        config['DEFAULT']['last_state'] = '0'
-    write_config()
-    # time.sleep(1)
-    tray.shutdown()
-
 def is_dark_mode_enabled():
     # Open the registry key that contains the system's personalization settings
     key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize')
@@ -182,14 +182,13 @@ elif (bw == 'auto' and darkmode == True) or bw == 'w':
 menu_options = (("Mute/Unmute", None, mute_wrapper), ("Toggle black/white icons", None, bwtoggle_wrapper), ("Reset state to unmuted", None, reset_state_wrapper), ("Created by https://github.com/danieldotkim/", None, github_wrapper), ("Quit", None, quit_program),)
 tray = SysTrayIcon(icon_unmuted, "MicMuter", menu_options)
 
+
 # Set icon based on last state
 if last_state == '0' or last_state == '':
-    print('last state is 0 or 2, setting icon to unmuted')
-    tray = SysTrayIcon(icon_unmuted, "MicMuter", menu_options)
+    tray.update(icon_unmuted)
     m = 0
 if last_state == '1':
-    print('last state is 1, setting icon to muted')
-    tray = SysTrayIcon(icon_muted, "MicMuter", menu_options)
+    tray.update(icon_muted)
     m = 1
 
 # tray.update(icon_unmuted) # set the tray icon to the unmuted icon

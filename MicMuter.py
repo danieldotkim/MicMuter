@@ -4,7 +4,6 @@ from pynput import keyboard
 from pygame import mixer
 import configparser
 from infi.systray import SysTrayIcon
-import time
 import webbrowser
 import sys
 import os
@@ -29,13 +28,17 @@ def write_config():
 if not os.path.exists(config_path):
     config = configparser.ConfigParser()
     config['DEFAULT'] = {
-        'unmuteOnExit': '1',
+        'unmute_on_exit': '0',
         'volume': '0.3',
         'output_device': '',
         'hotkey0': '<alt>+`',
         'hotkey1': '',
         'hotkey2': '',
+        'hotkey3': '',
+        'hotkey4': '',
+        'hotkey5': '',
         'bw' : 'auto',
+        'last_state': '',
         'mute_sound': 'muted.wav',
         'unmute_sound': 'unmuted.wav'
     }
@@ -44,13 +47,17 @@ if not os.path.exists(config_path):
 # Load the configuration file
 config = configparser.ConfigParser()
 config.read(config_path)
-unmuteOnExit = int(config['DEFAULT']['unmuteOnExit'])
+unmuteOnExit = int(config['DEFAULT']['unmute_on_exit'])
 volume = float(config['DEFAULT']['volume'])
 output_device = config['DEFAULT']['output_device']
 hotkey0 = config['DEFAULT']['hotkey0']
 hotkey1 = config['DEFAULT']['hotkey1']
 hotkey2 = config['DEFAULT']['hotkey2']
+hotkey3 = config['DEFAULT']['hotkey3']
+hotkey4 = config['DEFAULT']['hotkey4']
+hotkey5 = config['DEFAULT']['hotkey5']
 bw = config['DEFAULT']['bw']
+last_state = config['DEFAULT']['last_state']
 mute_sound = os.path.join(resources_path, config['DEFAULT']['mute_sound'])
 unmute_sound = os.path.join(resources_path, config['DEFAULT']['unmute_sound'])
 
@@ -59,6 +66,7 @@ icon_muted_b = os.path.join(resources_path, 'muted_b.ico')
 icon_unmuted_b = os.path.join(resources_path, 'unmuted_b.ico')
 icon_muted_w = os.path.join(resources_path, 'muted_w.ico')
 icon_unmuted_w = os.path.join(resources_path, 'unmuted_w.ico')
+icon_last_state = os.path.join(resources_path, 'muted_b.ico')
 
 # Set bw status from config
 icon_muted = 'icon_muted_' + bw
@@ -99,7 +107,7 @@ def mute_wrapper(event):
     mute()
 
 def github():
-    webbrowser.open('https://github.com/ddanielkim/')
+    webbrowser.open('https://github.com/danieldotkim/')
 
 def github_wrapper(event):
     github()
@@ -111,12 +119,18 @@ def reset_state():
 
 def reset_state_wrapper(event):
     reset_state()
+
 # unmutes before quitting
 def quit_program(systray):
     global m
     if m == 1 and unmuteOnExit == 1:
         mute()
-    time.sleep(1)
+    if m == 1:
+        config['DEFAULT']['last_state'] = '1'
+    if m == 0:
+        config['DEFAULT']['last_state'] = '0'
+    write_config()
+    # time.sleep(1)
     tray.shutdown()
 
 def is_dark_mode_enabled():
@@ -165,12 +179,23 @@ elif (bw == 'auto' and darkmode == True) or bw == 'w':
     icon_unmuted = icon_unmuted_w
     
 # Tray menu
-menu_options = (("Mute/Unmute", None, mute_wrapper), ("Toggle black/white icons", None, bwtoggle_wrapper), ("Reset state to unmuted", None, reset_state_wrapper), ("Created by https://github.com/ddanielkim/", None, github_wrapper), ("Quit", None, quit_program),)
+menu_options = (("Mute/Unmute", None, mute_wrapper), ("Toggle black/white icons", None, bwtoggle_wrapper), ("Reset state to unmuted", None, reset_state_wrapper), ("Created by https://github.com/danieldotkim/", None, github_wrapper), ("Quit", None, quit_program),)
 tray = SysTrayIcon(icon_unmuted, "MicMuter", menu_options)
-tray.update(icon_unmuted) # set the tray icon to the unmuted icon
+
+# Set icon based on last state
+if last_state == '0' or last_state == '':
+    print('last state is 0 or 2, setting icon to unmuted')
+    tray = SysTrayIcon(icon_unmuted, "MicMuter", menu_options)
+    m = 0
+if last_state == '1':
+    print('last state is 1, setting icon to muted')
+    tray = SysTrayIcon(icon_muted, "MicMuter", menu_options)
+    m = 1
+
+# tray.update(icon_unmuted) # set the tray icon to the unmuted icon
 tray.start()
 
-hotkeys = [hotkey0, hotkey1, hotkey2]
+hotkeys = [hotkey0, hotkey1, hotkey2, hotkey3, hotkey4, hotkey5]
 hotkey_dict = {}
 for hotkey in hotkeys:
     if hotkey != '':

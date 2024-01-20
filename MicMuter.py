@@ -1,14 +1,14 @@
+import os
+import sys
+import webbrowser
+import atexit
 import win32api
 import win32gui
-from pynput import keyboard
-from pygame import mixer
-import configparser
-from infi.systray import SysTrayIcon
-import webbrowser
-import sys
-import os
 import winreg
-import atexit
+from pygame import mixer
+from pynput import keyboard
+from infi.systray import SysTrayIcon
+import configparser
 
 @atexit.register
 def quit_program(systray):
@@ -50,7 +50,11 @@ if not os.path.exists(config_path):
         'hotkey3': '',
         'hotkey4': '',
         'hotkey5': '',
-        'bw' : 'auto',
+        'hotkey6': '',
+        'hotkey7': '',
+        'hotkey8': '',
+        'hotkey9': '',
+        'bw': 'auto',
         'last_state': '',
         'mute_sound': 'muted.wav',
         'unmute_sound': 'unmuted.wav'
@@ -63,12 +67,21 @@ config.read(config_path)
 unmuteOnExit = int(config['DEFAULT']['unmute_on_exit'])
 volume = float(config['DEFAULT']['volume'])
 output_device = config['DEFAULT']['output_device']
+
+# Define hotkeys dynamically
 hotkey0 = config['DEFAULT']['hotkey0']
 hotkey1 = config['DEFAULT']['hotkey1']
 hotkey2 = config['DEFAULT']['hotkey2']
 hotkey3 = config['DEFAULT']['hotkey3']
 hotkey4 = config['DEFAULT']['hotkey4']
 hotkey5 = config['DEFAULT']['hotkey5']
+hotkey6 = config['DEFAULT']['hotkey6']
+hotkey7 = config['DEFAULT']['hotkey7']
+hotkey8 = config['DEFAULT']['hotkey8']
+hotkey9 = config['DEFAULT']['hotkey9']
+
+hotkeys = [hotkey0, hotkey1, hotkey2, hotkey3, hotkey4, hotkey5, hotkey6, hotkey7, hotkey8, hotkey9]
+
 bw = config['DEFAULT']['bw']
 last_state = config['DEFAULT']['last_state']
 mute_sound = os.path.join(resources_path, config['DEFAULT']['mute_sound'])
@@ -116,8 +129,9 @@ def mute():
     win32api.SendMessage(hwnd_active, WM_APPCOMMAND, None, APPCOMMAND_MICROPHONE_VOLUME_MUTE)
     m ^= 1
 
-def mute_wrapper(event):
-    mute()
+    # Update the configuration with the current state
+    config['DEFAULT']['last_state'] = str(m)
+    write_config()
 
 def github():
     webbrowser.open('https://github.com/danieldotkim/')
@@ -125,13 +139,21 @@ def github():
 def github_wrapper(event):
     github()
 
-def reset_state():
+def set_state_to_unmuted():
     global m
     m = 0
     tray.update(icon_unmuted)
 
-def reset_state_wrapper(event):
-    reset_state()
+def set_state_to_unmuted_wrapper(event):
+    set_state_to_unmuted()
+
+def set_state_to_muted(dummy_argument=None):
+    global m
+    m = 1
+    tray.update(icon_muted)
+
+def set_state_to_muted_wrapper(event):
+    set_state_to_muted()
 
 def is_dark_mode_enabled():
     # Open the registry key that contains the system's personalization settings
@@ -143,6 +165,9 @@ def is_dark_mode_enabled():
     return value == 0
 
 darkmode = is_dark_mode_enabled()
+
+def mute_wrapper(event):
+    mute()
 
 def bwtoggle():
     global bw
@@ -170,6 +195,12 @@ def bwtoggle():
 def bwtoggle_wrapper(event):
     bwtoggle()
 
+def open_config():
+    webbrowser.open(config_path)
+
+def open_config_wrapper(event):
+    open_config()
+
 # Initialize the correct tray icon based on config
 if (bw == 'auto' and darkmode == False) or bw == 'b':
     icon_muted = icon_muted_b
@@ -179,9 +210,17 @@ elif (bw == 'auto' and darkmode == True) or bw == 'w':
     icon_unmuted = icon_unmuted_w
     
 # Tray menu
-menu_options = (("Mute/Unmute", None, mute_wrapper), ("Toggle black/white icons", None, bwtoggle_wrapper), ("Reset state to unmuted", None, reset_state_wrapper), ("Created by https://github.com/danieldotkim/", None, github_wrapper), ("Quit", None, quit_program),)
-tray = SysTrayIcon(icon_unmuted, "MicMuter", menu_options)
+menu_options = (
+    ("Mute/Unmute", None, mute_wrapper),
+    ("Created by https://github.com/danieldotkim/", None, github_wrapper),
+    ("Toggle black/white icons", None, bwtoggle_wrapper),
+    ("Set state to unmuted", None, set_state_to_unmuted_wrapper),
+    ("Set state to muted", None, set_state_to_muted),
+    ("Open Configuration", None, open_config_wrapper),
+    ("Quit", None, quit_program),
+)
 
+tray = SysTrayIcon(icon_unmuted, "MicMuter", menu_options)
 
 # Set icon based on last state
 if last_state == '0' or last_state == '':
